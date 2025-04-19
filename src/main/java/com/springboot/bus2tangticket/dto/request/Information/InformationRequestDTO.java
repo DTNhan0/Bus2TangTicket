@@ -1,11 +1,11 @@
-package com.springboot.bus2tangticket.dto.request;
+package com.springboot.bus2tangticket.dto.request.Information;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
 public class InformationRequestDTO {
@@ -26,7 +26,7 @@ public class InformationRequestDTO {
     @NotNull(message = "Ngày sinh không được để trống")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     @DateTimeFormat(pattern = "dd-MM-yyyy")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     private Boolean sex;
 
