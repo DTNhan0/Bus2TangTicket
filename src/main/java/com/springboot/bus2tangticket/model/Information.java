@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import java.util.Objects;
 @Table(name = "information")
 public class Information {
 
+    // Getters and Setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdInfo")
@@ -35,10 +37,8 @@ public class Information {
     @Column(name = "LastName", length = 100, nullable = false)
     private String lastName;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
-    @DateTimeFormat(pattern = "dd-MM-yyyy") // Hữu ích nếu dùng form-data
-    private Date dateOfBirth;
-
+    @Column(name = "DateOfBirth")
+    private LocalDate dateOfBirth; // hoặc java.sql.Date nếu dùng JDBC
 
     @Column(name = "Sex")
     private Boolean sex;  // tinyint(1) sẽ được ánh xạ với Boolean
@@ -68,95 +68,6 @@ public class Information {
     @PreUpdate
     protected void onUpdate() {
         this.updateAt = LocalDateTime.now();
-    }
-
-    // Getters and Setters
-    public int getIdInfo() {
-        return idInfo;
-    }
-
-    public void setIdInfo(int idInfo) {
-        this.idInfo = idInfo;
-    }
-
-    public String getCic() {
-        return cic;
-    }
-
-    public void setCic(String cic) {
-        this.cic = cic;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getMiddleName() {
-        return middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-        this.middleName = middleName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public Date getDateOfBirth() {
-        return dateOfBirth;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public Boolean getSex() {
-        return sex;
-    }
-
-    public void setSex(Boolean sex) {
-        this.sex = sex;
-    }
-
-    public String getPermanentAddress() {
-        return permanentAddress;
-    }
-
-    public void setPermanentAddress(String permanentAddress) {
-        this.permanentAddress = permanentAddress;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public LocalDateTime getUpdateAt() {
-        return updateAt;
-    }
-
-    public void setUpdateAt(LocalDateTime updateAt) {
-        this.updateAt = updateAt;
     }
 
     @Override

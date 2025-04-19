@@ -19,9 +19,6 @@ public class InformationServiceImpl implements InformationService{
     @Autowired
     private InformationRepo informationRepo;
 
-    @Autowired
-    private ModelMapper modelMapper;
-
     @PersistenceContext
     private EntityManager em;
 
@@ -44,10 +41,9 @@ public class InformationServiceImpl implements InformationService{
     //CREATE
     @Transactional
     @Override
-    public Information createInfo(InformationRequestDTO dto) {
+    public Information createInfo(Information information) {
         resetAutoIncrement();
-        Information info = this.modelMapper.map(dto, Information.class);
-        return informationRepo.save(info);
+        return informationRepo.save(information);
     }
 
     //READ
@@ -64,38 +60,38 @@ public class InformationServiceImpl implements InformationService{
     //UPDATE
     @Transactional
     @Override
-    public Information updateInfo(int infoId, InformationRequestDTO dto) {
+    public Information updateInfo(int infoId, Information information) {
         Information existingInfo = informationRepo.findById(infoId)
                 .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy thông tin với ID: " + infoId));
 
         // Kiểm tra CIC đã tồn tại (và khác cái hiện tại)
-        if (!existingInfo.getCic().equals(dto.getCic()) &&
-                informationRepo.existsByCic(dto.getCic())) {
+        if (!existingInfo.getCic().equals(information.getCic()) &&
+                informationRepo.existsByCic(information.getCic())) {
             throw new RuntimeException("CIC đã tồn tại");
         }
 
         // Kiểm tra email đã tồn tại
-        if (!existingInfo.getEmail().equals(dto.getEmail()) &&
-                informationRepo.existsByEmail(dto.getEmail())) {
+        if (!existingInfo.getEmail().equals(information.getEmail()) &&
+                informationRepo.existsByEmail(information.getEmail())) {
             throw new RuntimeException("Email đã tồn tại");
         }
 
         // Kiểm tra số điện thoại đã tồn tại
-        if (!existingInfo.getPhoneNumber().equals(dto.getPhoneNumber()) &&
-                informationRepo.existsByPhoneNumber(dto.getPhoneNumber())) {
+        if (!existingInfo.getPhoneNumber().equals(information.getPhoneNumber()) &&
+                informationRepo.existsByPhoneNumber(information.getPhoneNumber())) {
             throw new RuntimeException("Số điện thoại đã tồn tại");
         }
 
         // Cập nhật dữ liệu từ DTO
-        existingInfo.setFirstName(dto.getFirstName());
-        existingInfo.setMiddleName(dto.getMiddleName());
-        existingInfo.setLastName(dto.getLastName());
-        existingInfo.setDateOfBirth(dto.getDateOfBirth());
-        existingInfo.setSex(dto.getSex());
-        existingInfo.setPermanentAddress(dto.getPermanentAddress());
-        existingInfo.setCic(dto.getCic());
-        existingInfo.setPhoneNumber(dto.getPhoneNumber());
-        existingInfo.setEmail(dto.getEmail());
+        existingInfo.setFirstName(information.getFirstName());
+        existingInfo.setMiddleName(information.getMiddleName());
+        existingInfo.setLastName(information.getLastName());
+        existingInfo.setDateOfBirth(information.getDateOfBirth());
+        existingInfo.setSex(information.getSex());
+        existingInfo.setPermanentAddress(information.getPermanentAddress());
+        existingInfo.setCic(information.getCic());
+        existingInfo.setPhoneNumber(information.getPhoneNumber());
+        existingInfo.setEmail(information.getEmail());
 
         // `updateAt` sẽ tự cập nhật qua @PreUpdate
         return informationRepo.save(existingInfo);
@@ -104,12 +100,13 @@ public class InformationServiceImpl implements InformationService{
     //DELETE
     @Transactional
     @Override
-    public void deleteInfo(int infoId) {
-        Information existingInfo = informationRepo.findById(infoId)
-                .orElseThrow(() -> new EntityNotFoundException("Không tìm thấy thông tin với ID: " + infoId));
-
+    public Information deleteInfo(int infoId) {
         resetAutoIncrement();
-        informationRepo.deleteById(existingInfo.getIdInfo());
+        Information information = informationRepo.findById(infoId).orElse(null);
+
+        informationRepo.deleteById(infoId);
+
+        return information;
     }
 
     //OTHER
