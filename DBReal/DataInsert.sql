@@ -91,4 +91,114 @@ VALUES
   DATE_ADD(NOW(), INTERVAL 30 DAY),
   1
 );
+
+INSERT INTO busroute (
+  IdBusRoute, IdParent, BusRouteName, Overview, Description, Highlights,
+  Included, Excluded, WhatToBring, BeforeYouGo, IsAvailable
+)
+VALUES
+(1, NULL, 'Line 1: Trung tâm TP - Dinh Độc Lập',
+  'Tuyến du lịch thành phố bằng xe buýt hai tầng hiện đại với lộ trình trung tâm Sài Gòn.',
+  'Trải nghiệm khám phá trung tâm thành phố Hồ Chí Minh bằng xe buýt hai tầng Vietnam Sightseeing với hệ thống thuyết minh tự động đa ngôn ngữ.',
+  'Đi qua Nhà thờ Đức Bà, Bưu điện, Dinh Độc Lập, phố đi bộ Nguyễn Huệ...',
+  'Vé xe buýt, Tai nghe, Wifi miễn phí, Bản đồ, Bảo hiểm',
+  'Không bao gồm đồ ăn, vé vào cổng địa điểm, đưa đón khách sạn',
+  'Trang phục lịch sự, điện thoại để nghe audio guide',
+  'Vui lòng đến sớm 10 phút, chuẩn bị vé QR để check-in',
+  1
+),
+
+(2, NULL, 'Line 2: Sài Gòn - Chợ Lớn',
+  'Là một trong những sản phẩm xe buýt 2 tầng đầu tiên Sài Gòn, Sài Gòn - Chợ lớn City tour là một hình thức độc đáo với dịch vụ chất lượng cao mang đến một chuyến du lịch sáng tạo, thú vị và linh hoạt.',
+  'Chúng tôi cam kết cải thiện chất lượng trong ngành du lịch tại mỗi thành phố nơi chúng tôi có mặt, cũng như nỗ lực để đạt được sự hài lòng hoàn toàn của khách hàng.',
+  'Xe buýt hai tầng Vietnam Sightseeing tại thành phố Hồ Chí Minh\nVào cửa không giới hạn các điểm tham quan chính ở Sài Gòn (vé có giá trị trong 4 giờ)\nTham quan Sài Gòn theo tốc độ của riêng bạn và ngắm nhìn những địa danh tiêu biểu nhất của Sài Gòn\nCó thể kết nối Audio guide 9 ngôn ngữ\nXe buýt chạy cứ sau 30 phút',
+  'Vé xe buýt hai tầng\nLái xe / Phụ xe\nWifi miễn phí trên xe\nThuyết minh đa ngôn ngữ\nTai nghe\nBản đồ lộ trình\nBảo hiểm du lịch',
+  'Phí vào cửa\nThức ăn và đồ uống khác\nĐón và trả khách sạn\nTiền thưởng (không bắt buộc)',
+  'Trang phục thoải mái\nKính râm\nKem chống nắng',
+  'Thời gian có thể thay đổi tùy theo tình trạng giao thông.\nĐưa cho nhân viên mặc đồng phục vé điện tử để check in.',
+  0
+),
+
+(3, 2, 'Line 2B: Sài Gòn - Chợ Lớn - Mở rộng',
+  'Tuyến mở rộng từ Line 2, đi qua thêm nhiều điểm ở khu vực quận 5.',
+  'Bổ sung các điểm như Bệnh viện Hùng Vương, Chùa Bà Thiên Hậu, Hẻm ẩm thực Hải Thượng Lãn Ông.',
+  'Tuyến dài hơn, có thời lượng 6 giờ\nDừng lâu hơn tại mỗi điểm',
+  'Vé xe buýt, Nước suối, Tai nghe',
+  'Không bao gồm hướng dẫn viên riêng, các tour nội khu',
+  'Nón, khẩu trang, điện thoại sạc đầy',
+  'Có thể đông vào dịp lễ, vui lòng giữ gìn trật tự trên xe',
+  1
+);
+
+-- Trạm dừng cho tuyến Line 1: Trung tâm TP - Dinh Độc Lập (IdBusRoute = 1)
+INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, `Address`, `StopOrder`, `IsAvailable`) VALUES
+(NULL, 1, 'Nhà thờ Đức Bà', 
+'Điểm dừng gần Nhà thờ Đức Bà Sài Gòn - một công trình kiến trúc tiêu biểu của Pháp thời thuộc địa.', 
+'01 Công xã Paris, Phường Bến Nghé, Quận 1, TP.HCM', 
+0, TRUE),
+
+(NULL, 1, 'Dinh Độc Lập', 
+'Xe dừng tại cổng chính Dinh Độc Lập, nơi từng là Phủ Tổng Thống của chính quyền Việt Nam Cộng Hòa.', 
+'135 Nam Kỳ Khởi Nghĩa, Phường Bến Thành, Quận 1, TP.HCM', 
+1, TRUE);
+
+
+-- Trạm dừng cho tuyến Line 2: Sài Gòn - Chợ Lớn (IdBusRoute = 2)
+INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, `Address`, `StopOrder`, `IsAvailable`) VALUES
+(NULL, 2, 'Chợ Bến Thành', 
+'Trạm khởi hành tại khu vực phía trước Chợ Bến Thành – biểu tượng thương mại của Sài Gòn.', 
+'Đường Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM', 
+0, FALSE),
+
+(NULL, 2, 'Chùa Bà Thiên Hậu', 
+'Xe dừng gần Chùa Bà Thiên Hậu, một ngôi chùa linh thiêng có kiến trúc Trung Hoa nổi bật ở quận 5.', 
+'710 Nguyễn Trãi, Phường 11, Quận 5, TP.HCM', 
+1, FALSE);
+
+
+-- Trạm dừng cho tuyến Line 2B: Sài Gòn - Chợ Lớn - Mở rộng (IdBusRoute = 3)
+INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, `Address`, `StopOrder`, `IsAvailable`) VALUES
+(NULL, 3, 'Bệnh viện Hùng Vương', 
+'Trạm dừng gần bệnh viện lớn và lâu đời nhất tại TP.HCM, điểm nhận diện nổi bật tại quận 5.', 
+'128 Hồng Bàng, Phường 12, Quận 5, TP.HCM', 
+0, TRUE),
+
+(4, 3, 'Line 2: Chùa Bà Thiên Hậu', 
+'Xe dừng gần Chùa Bà Thiên Hậu, một ngôi chùa linh thiêng có kiến trúc Trung Hoa nổi bật ở quận 5.', 
+'710 Nguyễn Trãi, Phường 11, Quận 5, TP.HCM', 
+1, TRUE);
+
+-- Vé 24h (active) cho Line 1
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (1, 299000, 225000, '24h', 1);
+
+-- Vé 48h (active) cho Line 1
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (1, 399000, 289000, '48h', 1);
+
+-- Vé 24h (active) cho Line 2
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (2, 275000, 199000, '24h', 1);
+
+-- Vé 48h (inactive - vé cũ, thay thế bằng vé khác chẳng hạn)
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (2, 375000, 289000, '48h', 0);
+
+-- Vé 48h (active) cho Line 2
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (2, 359000, 265000, '48h', 1);
+
+-- Vé 24h (active) cho Line 2B
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (3, 319000, 240000, '24h', 1);
+
+-- Vé 24h (inactive - vé cũ) cho Line 2B
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (3, 305000, 230000, '24h', 0);
+
+-- Vé 48h (active) cho Line 2B
+INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
+VALUES (3, 415000, 330000, '48h', 1);
+
+
  
