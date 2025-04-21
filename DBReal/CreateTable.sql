@@ -45,41 +45,38 @@ CREATE TABLE `permissionfunction` (
   CONSTRAINT `permissionfunction_ibfk_2` FOREIGN KEY (`IdFunction`) REFERENCES `function` (`IdFunction`)
 );
 
-CREATE TABLE `authority` (
-  `IdAuthority` int NOT NULL AUTO_INCREMENT,
+CREATE TABLE `account` (
+  `IdAccount` int NOT NULL AUTO_INCREMENT,
   `IdInfo` int NOT NULL,
   `AccountName` varchar(50) NOT NULL,
   `Password` varchar(255) NOT NULL,
   `AccessToken` text NOT NULL,
   `RefreshToken` text NOT NULL,
   `TokenExpired` datetime NOT NULL,
-  `IsLocked` tinyint(1) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`IdAuthority`),
+  `IsLocked` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`IdAccount`),
   UNIQUE KEY `AccountName` (`AccountName`),
   CONSTRAINT `authority_ibfk_1` FOREIGN KEY (`IdInfo`) REFERENCES `information` (`IdInfo`)
 );
 
 CREATE TABLE `permission` (
   `IdPermission` int NOT NULL AUTO_INCREMENT,
-  `IdAuthority` int NOT NULL,
+  `IdAccount` int NOT NULL,
   `IdPerGroup` int NOT NULL,
   PRIMARY KEY (`IdPermission`),
-  UNIQUE KEY `unique_permission` (`IdPerGroup`,`IdAuthority`),
+  UNIQUE KEY `unique_permission` (`IdPerGroup`,`IdAccount`),
   CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`IdPerGroup`) REFERENCES `permissiongroup` (`IdPerGroup`),
-  CONSTRAINT `permission_ibfk_2` FOREIGN KEY (`IdAuthority`) REFERENCES `authority` (`IdAuthority`)
+  CONSTRAINT `permission_ibfk_2` FOREIGN KEY (`IdAccount`) REFERENCES `account` (`IdAccount`)
 );
 
 CREATE TABLE `history` (
   `IdHistory` int NOT NULL AUTO_INCREMENT,
-  `IdAuthority` int NOT NULL,
   `IdPermission` int NOT NULL,
   `DateTime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `Description` text NOT NULL,
   PRIMARY KEY (`IdHistory`),
-  KEY `IdAuthority` (`IdAuthority`),
   KEY `IdPermission` (`IdPermission`),
-  CONSTRAINT `history_ibfk_1` FOREIGN KEY (`IdAuthority`) REFERENCES `authority` (`IdAuthority`),
-  CONSTRAINT `history_ibfk_2` FOREIGN KEY (`IdPermission`) REFERENCES `permission` (`IdPermission`)
+  CONSTRAINT `history_ibfk_1` FOREIGN KEY (`IdPermission`) REFERENCES `permission` (`IdPermission`)
 );
 
 CREATE TABLE `busroute` (
@@ -115,15 +112,15 @@ CREATE TABLE `ticketprice` (
 CREATE TABLE `assignment` (
   `IdAssignment` int NOT NULL AUTO_INCREMENT,
   `IdBusRoute` int NOT NULL,
-  `IdAuthority` int NOT NULL,
+  `IdAccount` int NOT NULL,
   `DateAssignment` date NOT NULL,
   `UpdateAt` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `IsWorking` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`IdAssignment`),
-  UNIQUE KEY `unique_assignment` (`IdBusRoute`,`IdAuthority`),
-  KEY `IdAuthority` (`IdAuthority`),
+  UNIQUE KEY `unique_assignment` (`IdBusRoute`,`IdAccount`),
+  KEY `IdAccount` (`IdAccount`),
   CONSTRAINT `assignment_ibfk_1` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`),
-  CONSTRAINT `assignment_ibfk_2` FOREIGN KEY (`IdAuthority`) REFERENCES `authority` (`IdAuthority`)
+  CONSTRAINT `assignment_ibfk_2` FOREIGN KEY (`IdAccount`) REFERENCES `account` (`IdAccount`)
 );
 
 CREATE TABLE `busstop` (
@@ -257,7 +254,7 @@ CREATE TABLE `invoicedetail` (
 
 CREATE TABLE `blog` (
   `IdBlog` int NOT NULL AUTO_INCREMENT,
-  `IdAuthority` int NOT NULL,
+  `IdAccount` int NOT NULL,
   `NameBlog` varchar(255) NOT NULL,
   `Header` text,
   `Description` text,
@@ -265,8 +262,8 @@ CREATE TABLE `blog` (
   `Date` datetime DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`IdBlog`),
   UNIQUE KEY `NameBlog` (`NameBlog`),
-  KEY `IdAuthority` (`IdAuthority`),
-  CONSTRAINT `blog_ibfk_1` FOREIGN KEY (`IdAuthority`) REFERENCES `authority` (`IdAuthority`)
+  KEY `IdAccount` (`IdAccount`),
+  CONSTRAINT `blog_ibfk_1` FOREIGN KEY (`IdAccount`) REFERENCES `account` (`IdAccount`)
 );
 
 CREATE TABLE `review` (

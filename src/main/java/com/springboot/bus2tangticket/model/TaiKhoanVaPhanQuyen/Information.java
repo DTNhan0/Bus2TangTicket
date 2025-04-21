@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class Information {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "IdInfo")
-    private int idInfo;
+    private Integer idInfo;
 
     @Column(name = "Cic", length = 12, nullable = false, unique = true)
     private String cic;
@@ -97,4 +98,7 @@ public class Information {
     public int hashCode() {
         return Objects.hash(idInfo, cic, phoneNumber, email);
     }
+
+    @OneToMany(mappedBy = "information", fetch = FetchType.LAZY)
+    private List<Account> accounts;
 }
