@@ -55,7 +55,6 @@ public class InformationServiceImpl implements InformationService{
 
     @Override
     public BaseResponse<Information> getInfo(int idInfo) {
-
         Information information = informationRepo.findById(idInfo).orElse(null);
 
         if(information == null)
