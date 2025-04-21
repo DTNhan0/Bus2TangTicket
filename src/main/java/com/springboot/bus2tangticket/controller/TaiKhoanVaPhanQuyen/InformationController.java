@@ -5,7 +5,6 @@ import com.springboot.bus2tangticket.dto.response.Account.AccountNoInfoResponseD
 import com.springboot.bus2tangticket.dto.response.Information.InformationAccListResponseDTO;
 import com.springboot.bus2tangticket.dto.response.Information.InformationResponseDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
-import com.springboot.bus2tangticket.model.TaiKhoanVaPhanQuyen.Account;
 import com.springboot.bus2tangticket.model.TaiKhoanVaPhanQuyen.Information;
 import com.springboot.bus2tangticket.service.TaiKhoanVaPhanQuyen.InformationServiceImpl;
 import jakarta.validation.Valid;
@@ -14,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -67,7 +65,7 @@ public class InformationController {
     }
 
     @GetMapping("/information/{idInfo}")
-    public ResponseEntity<BaseResponse<InformationResponseDTO>> getInfo(@PathVariable int idInfo){
+    public ResponseEntity<BaseResponse<InformationResponseDTO>> getInfo(@PathVariable("idInfo") int idInfo){
         BaseResponse<Information> baseResponse = informationServiceImpl.getInfo(idInfo);
 
         return ResponseEntity.ok(
@@ -102,7 +100,7 @@ public class InformationController {
     //OTHER
     //Lấy danh sách account bằng id info
     @GetMapping("/information/{idInfo}/account")
-    public ResponseEntity<BaseResponse<InformationAccListResponseDTO>> getAllAccByIdInfo(@PathVariable int idInfo){
+    public ResponseEntity<BaseResponse<InformationAccListResponseDTO>> getAllAccByIdInfo(@PathVariable("idInfo") int idInfo){
 
         BaseResponse<Information> baseResponse = informationServiceImpl.getAllAccByIdInfo(idInfo);
 
