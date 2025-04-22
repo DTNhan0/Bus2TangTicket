@@ -43,6 +43,11 @@ public class BusStopServiceImpl implements BusStopService{
     @Override
     public BaseResponse<BusStop> createBusStop(BusStop busStop) {
         resetAutoIncrement();
+        for(BusStop br : busStopRepo.findAll()){
+            if(busStop.getBusStopName().equals(br.getBusStopName())){
+                return new BaseResponse<>(ResponseStatus.FAILED, "Tên busStopName đã tồn tại trên hệ thống!", null);
+            }
+        }
         BusStop busStopAdd = busStopRepo.save(busStop);
         return new BaseResponse<>(ResponseStatus.SUCCESS, "Tạo busStop thành công!", busStopAdd);
     }
@@ -69,29 +74,42 @@ public class BusStopServiceImpl implements BusStopService{
     public BaseResponse<BusStop> updateBusStop(int idBusStop, BusStop busStop) {
         BaseResponse<BusStop> baseResponse = getBusStop(idBusStop);
 
-//        System.out.println(baseResponse.getData());
-
         if (baseResponse.getData() == null)
             return new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), null);
 
         BusStop existingBusStop = baseResponse.getData();
 
-        // Kiểm tra BusStopName đã tồn tại (và khác cái hiện tại)
-        if (!existingBusStop.getBusStopName().equals(busStop.getBusStopName()) &&
-                busStopRepo.existsByBusStopName(busStop.getBusStopName())) {
-            return new BaseResponse<>(ResponseStatus.FAILED, "BusStopName đã tồn tại", null);
+        // Nếu tên bị thay đổi
+        if (!existingBusStop.getBusStopName().equals(busStop.getBusStopName())) {
+            if (busStopRepo.existsByBusStopName(busStop.getBusStopName())) {
+                return new BaseResponse<>(ResponseStatus.FAILED, "BusStopName đã tồn tại", null);
+            }
+
+            // Set bản cũ không khả dụng
+            existingBusStop.setIsAvailable(false);
+            busStopRepo.save(existingBusStop);
+
+            // Tạo mới
+            BusStop newBusStop = new BusStop();
+            newBusStop.setBusStopName(busStop.getBusStopName());
+            newBusStop.setIntroduction(busStop.getIntroduction());
+            newBusStop.setAddress(busStop.getAddress());
+            newBusStop.setStopOrder(busStop.getStopOrder());
+            newBusStop.setIsAvailable(true);
+            newBusStop.setIdParent(existingBusStop.getIdBusStop());
+
+            BusStop saved = busStopRepo.save(newBusStop);
+            return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã tạo mới BusStop thay cho bản cũ!", saved);
         }
 
-        existingBusStop.setBusStopName(busStop.getBusStopName());
+        // Nếu không đổi tên → cập nhật như thường
         existingBusStop.setIntroduction(busStop.getIntroduction());
         existingBusStop.setAddress(busStop.getAddress());
         existingBusStop.setStopOrder(busStop.getStopOrder());
         existingBusStop.setIsAvailable(busStop.getIsAvailable());
 
         BusStop updated = busStopRepo.save(existingBusStop);
-
-        // `updateAt` sẽ tự cập nhật qua @PreUpdate
-        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã cập nhật busStop có id: " + idBusStop, updated);
+        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã cập nhật busStop!", updated);
     }
 
     //DELETE

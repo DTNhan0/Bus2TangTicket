@@ -1,7 +1,11 @@
 package com.springboot.bus2tangticket.controller.TuyenXeVaTramDung;
 
+import com.springboot.bus2tangticket.dto.request.BusRoute.BusRouteListBusStopRequestDTO;
 import com.springboot.bus2tangticket.dto.request.BusRoute.BusRouteRequestDTO;
+import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteListBusStopResponseDTO;
 import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteResponseDTO;
+import com.springboot.bus2tangticket.dto.response.BusStop.BusStopNoBusRouteResponseDTO;
+import com.springboot.bus2tangticket.dto.response.BusStop.BusStopResponseDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusRoute;
 import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.BusRouteServiceImpl;
@@ -40,7 +44,9 @@ public class BusRouteController {
         BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.createBusRoute(this.modelMapper.map(requestDTO, BusRoute.class));
 
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class)
+                        : null)
         );
     }
 
@@ -59,14 +65,26 @@ public class BusRouteController {
     }
 
     @GetMapping("/busroute/{idBusRoute}")
-    public ResponseEntity<BaseResponse<BusRouteResponseDTO>> getBusRoute(@PathVariable("idBusRoute") int idBusRoute){
+    public ResponseEntity<BaseResponse<BusRouteListBusStopResponseDTO>> getBusRoute(@PathVariable("idBusRoute") int idBusRoute){
         BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.getBusRoute(idBusRoute);
+
+        if(baseResponse.getData() == null)
+            return ResponseEntity.ok(
+                    new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), null)
+            );
+
+        BusRouteListBusStopResponseDTO busRouteListBusStopResponseDTO = this.modelMapper.map(
+                baseResponse.getData(), BusRouteListBusStopResponseDTO.class
+        );
+
+        busRouteListBusStopResponseDTO.setBusStopList(baseResponse.getData().getBusStops().stream()
+                .map(bs -> this.modelMapper.map(bs, BusStopNoBusRouteResponseDTO.class))
+                .toList()
+        );
 
         return ResponseEntity.ok(
                 new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
-                        baseResponse.getData() != null
-                                ? this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class)
-                                : null)
+                        busRouteListBusStopResponseDTO)
         );
     }
 
@@ -95,6 +113,34 @@ public class BusRouteController {
                         baseResponse.getData() != null
                         ? this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class)
                         : null)
+        );
+    }
+
+    //OTHER
+    @PutMapping("/busroute/{idBusRoute}/busstop")
+    public ResponseEntity<BaseResponse<BusRouteListBusStopResponseDTO>> addListBusStopToBusRoute(
+            @PathVariable("idBusRoute") int idBusRoute,
+            @RequestBody BusRouteListBusStopRequestDTO busRouteListBusStopRequestDTO
+    ){
+        BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.addListBusStopToBusRoute(idBusRoute, busRouteListBusStopRequestDTO.getIdBusStopList());
+
+        if(baseResponse.getData() == null)
+            return ResponseEntity.ok(
+                    new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), null)
+            );
+
+        BusRouteListBusStopResponseDTO busRouteListBusStopResponseDTO = this.modelMapper.map(
+                baseResponse.getData(), BusRouteListBusStopResponseDTO.class
+        );
+
+        busRouteListBusStopResponseDTO.setBusStopList(baseResponse.getData().getBusStops().stream()
+                .map(bs -> this.modelMapper.map(bs, BusStopNoBusRouteResponseDTO.class))
+                .toList()
+        );
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        busRouteListBusStopResponseDTO)
         );
     }
 }

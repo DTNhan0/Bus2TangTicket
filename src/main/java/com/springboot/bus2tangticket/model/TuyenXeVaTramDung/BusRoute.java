@@ -89,5 +89,4 @@ public class BusRoute {
                 .collect(Collectors.toList());
     }
 
-
 }

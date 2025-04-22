@@ -1,11 +1,8 @@
 package com.springboot.bus2tangticket.controller.TuyenXeVaTramDung;
 
-import com.springboot.bus2tangticket.dto.request.BusRoute.BusRouteRequestDTO;
 import com.springboot.bus2tangticket.dto.request.BusStop.BusStopRequestDTO;
-import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteResponseDTO;
 import com.springboot.bus2tangticket.dto.response.BusStop.BusStopResponseDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
-import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusRoute;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusStop;
 import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.BusStopServiceImpl;
 import jakarta.validation.Valid;
