@@ -1,6 +1,7 @@
 package com.springboot.bus2tangticket.model.TuyenXeVaTramDung;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.springboot.bus2tangticket.model.XayDungLoTrinh.BusStopSchedule;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -58,5 +59,9 @@ public class BusStop {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdBusRoute")
     private BusRoute busRoute;
+
+    @OneToMany(mappedBy = "busStop", fetch = FetchType.LAZY)
+    private List<BusStopSchedule> busStopScheduleList;
+
 }
 
