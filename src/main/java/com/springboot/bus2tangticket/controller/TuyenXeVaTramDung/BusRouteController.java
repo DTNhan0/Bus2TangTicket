@@ -91,7 +91,10 @@ public class BusRouteController {
         BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.deleteBusRoute(idBusRoute);
 
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), BusRouteResponseDTO.class)
+                        : null)
         );
     }
 }

@@ -83,7 +83,10 @@ public class InformationController {
             @Valid @RequestBody InformationRequestDTO updatedDto) {
         BaseResponse<Information> baseResponse = informationServiceImpl.updateInfo(idInfo, this.modelMapper.map(updatedDto, Information.class));
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), InformationResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), InformationResponseDTO.class)
+                        : null)
         );
     }
 
@@ -93,7 +96,10 @@ public class InformationController {
         BaseResponse<Information> baseResponse = informationServiceImpl.deleteInfo(idInfo);
 
         return ResponseEntity.ok(
-            new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), InformationResponseDTO.class))
+            new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                    baseResponse.getData() != null
+                    ? this.modelMapper.map(baseResponse.getData(), InformationResponseDTO.class)
+                    : null)
         );
     }
 

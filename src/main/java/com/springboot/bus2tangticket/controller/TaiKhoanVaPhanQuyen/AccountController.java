@@ -82,7 +82,10 @@ public class AccountController {
         BaseResponse<Account> baseResponse = accountServiceImpl.updateAcc(idAcc, this.modelMapper.map(accountRequestDTO, Account.class));
 
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), AccountResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), AccountResponseDTO.class)
+                        : null)
         );
     }
 
@@ -94,7 +97,10 @@ public class AccountController {
         BaseResponse<Account> baseResponse = accountServiceImpl.deleteAcc(idAcc);
 
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), AccountResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), AccountResponseDTO.class)
+                        : null)
         );
     }
 }
