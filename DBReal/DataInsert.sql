@@ -157,7 +157,6 @@ INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, 
 '710 Nguyễn Trãi, Phường 11, Quận 5, TP.HCM', 
 1, FALSE);
 
-
 -- Trạm dừng cho tuyến Line 2B: Sài Gòn - Chợ Lớn - Mở rộng (IdBusRoute = 3)
 INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, `Address`, `StopOrder`, `IsAvailable`) VALUES
 (NULL, 3, 'Bệnh viện Hùng Vương', 
