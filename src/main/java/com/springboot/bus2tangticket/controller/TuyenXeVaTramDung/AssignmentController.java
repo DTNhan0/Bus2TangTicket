@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @RestController
+@CrossOrigin
 @RequestMapping("api/v1")
 public class AssignmentController {
     @Autowired
