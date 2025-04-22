@@ -138,62 +138,40 @@ CREATE TABLE `busstop` (
   CONSTRAINT `busstop_chk_1` CHECK ((`StopOrder` >= -(1)))
 );
 
-CREATE TABLE `departuredate` (
-  `IdDepartureDate` int NOT NULL AUTO_INCREMENT,
-  `Date` date NOT NULL UNIQUE,
-  PRIMARY KEY (`IdDepartureDate`),
-  KEY `idx_departuredate` (`IdDepartureDate`)
-); 
-
 CREATE TABLE `routedeparturedate` (
   `IdRouteDepartureDate` int NOT NULL AUTO_INCREMENT,
-  `IdDepartureDate` int NOT NULL,
+  `Date` date NOT NULL,
   `IdBusRoute` int NOT NULL,
   `NumberOfSeats` int NOT NULL,
   `Status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`IdRouteDepartureDate`),
-  UNIQUE KEY `unique_route_departure` (`IdBusRoute`,`IdDepartureDate`),
-  KEY `IdDepartureDate` (`IdDepartureDate`),
-  CONSTRAINT `routedeparturedate_ibfk_1` FOREIGN KEY (`IdDepartureDate`) REFERENCES `departuredate` (`IdDepartureDate`),
-  CONSTRAINT `routedeparturedate_ibfk_2` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`),
+  UNIQUE KEY `unique_route_departure` (`IdBusRoute`,`Date`),
+  CONSTRAINT `routedeparturedate_ibfk_1` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`),
   CONSTRAINT `routedeparturedate_chk_1` CHECK ((`NumberOfSeats` > 0))
 );
 
 CREATE TABLE `busstopschedule` (
   `IdDepartureTime` int NOT NULL AUTO_INCREMENT,
-  `IdRouteDepartureDate` int NOT NULL,
   `IdBusStop` int NOT NULL,
   `OrderTime` int NOT NULL,
   `Time` time DEFAULT NULL,
   PRIMARY KEY (`IdDepartureTime`),
-  UNIQUE KEY `unique_busstopschedule` (`IdRouteDepartureDate`,`IdBusStop`),
+  UNIQUE KEY `unique_busstopschedule` (`IdBusStop`),
   KEY `IdBusStop` (`IdBusStop`),
-  CONSTRAINT `busstopschedule_ibfk_1` FOREIGN KEY (`IdRouteDepartureDate`) REFERENCES `routedeparturedate` (`IdRouteDepartureDate`),
   CONSTRAINT `busstopschedule_ibfk_2` FOREIGN KEY (`IdBusStop`) REFERENCES `busstop` (`IdBusStop`),
   CONSTRAINT `busstopschedule_chk_1` CHECK ((`OrderTime` > 0))
 );
 
-CREATE TABLE `mediafile` (
-  `IdMediaFile` int NOT NULL AUTO_INCREMENT,
-  `FileName` varchar(50) NOT NULL,
-  `FileData` longblob NOT NULL,
-  `FileType` varchar(10) NOT NULL,
+CREATE TABLE  `mediafile` (
+  `IdMediaFile` INT NOT NULL AUTO_INCREMENT,
+  `IdBusStop` INT NULL,
+  `IdBusRoute` INT NULL,
+  `FileName` VARCHAR(50) NOT NULL UNIQUE,
+  `FileData` LONGBLOB NOT NULL,
+  `FileType` VARCHAR(10) NOT NULL,
   PRIMARY KEY (`IdMediaFile`),
-  UNIQUE KEY `Name` (`FileName`)
-);
-
-CREATE TABLE `resourceref` (
-  `IdResourceRef` int NOT NULL AUTO_INCREMENT,
-  `IdMediaFile` int NOT NULL,
-  `IdBusStop` int NOT NULL,
-  `IdBusRoute` int NOT NULL,
-  PRIMARY KEY (`IdResourceRef`),
-  KEY `IdMediaFile` (`IdMediaFile`),
-  KEY `IdBusStop` (`IdBusStop`),
-  KEY `IdBusRoute` (`IdBusRoute`),
-  CONSTRAINT `resourceref_ibfk_1` FOREIGN KEY (`IdMediaFile`) REFERENCES `mediafile` (`IdMediaFile`),
-  CONSTRAINT `resourceref_ibfk_2` FOREIGN KEY (`IdBusStop`) REFERENCES `busstop` (`IdBusStop`),
-  CONSTRAINT `resourceref_ibfk_3` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`)
+  CONSTRAINT `mediafile_ibfk_1` FOREIGN KEY (`IdBusRoute`) REFERENCES `bus2tangticket`.`busroute` (`IdBusRoute`),
+  CONSTRAINT `mediafile_ibfk_2` FOREIGN KEY (`IdBusStop`) REFERENCES `bus2tangticket`.`busstop` (`IdBusStop`)
 );
 
 CREATE TABLE `userbook` (

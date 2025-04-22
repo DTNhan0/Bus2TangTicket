@@ -7,7 +7,6 @@ ALTER TABLE blog AUTO_INCREMENT = 1;
 ALTER TABLE busroute AUTO_INCREMENT = 1;
 ALTER TABLE busstop AUTO_INCREMENT = 1;
 ALTER TABLE busstopschedule AUTO_INCREMENT = 1;
-ALTER TABLE departuredate AUTO_INCREMENT = 1;
 ALTER TABLE `function` AUTO_INCREMENT = 1;
 ALTER TABLE `history` AUTO_INCREMENT = 1;
 ALTER TABLE invoice AUTO_INCREMENT = 1;
@@ -16,7 +15,6 @@ ALTER TABLE mediafile AUTO_INCREMENT = 1;
 ALTER TABLE permission AUTO_INCREMENT = 1;
 ALTER TABLE permissionfunction AUTO_INCREMENT = 1;
 ALTER TABLE permissiongroup AUTO_INCREMENT = 1;
-ALTER TABLE resourceref AUTO_INCREMENT = 1;
 ALTER TABLE review AUTO_INCREMENT = 1;
 ALTER TABLE routedeparturedate AUTO_INCREMENT = 1;
 ALTER TABLE ticketprice AUTO_INCREMENT = 1;
@@ -222,4 +220,21 @@ INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (2, 5);
 -- Account 6: dothiphuong → Line 2B
 INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (3, 6);
 
- 
+-- ROUTERDEPARTUREDATE
+-- Line 1: Trung tâm TP - Dinh Độc Lập (IdBusRoute = 1)
+INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
+('2025-04-19', 1, 30, 1),
+('2025-04-20', 1, 30, 1),
+('2025-04-21', 1, 30, 1);
+
+-- Line 2: Sài Gòn - Chợ Lớn (IdBusRoute = 2)
+INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
+('2025-04-19', 2, 30, 1),
+('2025-04-20', 2, 30, 1),
+('2025-04-21', 2, 30, 1);
+
+-- Line 2B: Sài Gòn - Chợ Lớn - Mở rộng (IdBusRoute = 3)
+INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
+('2025-04-19', 3, 30, 1),
+('2025-04-20', 3, 30, 1),
+('2025-04-21', 3, 30, 1);
