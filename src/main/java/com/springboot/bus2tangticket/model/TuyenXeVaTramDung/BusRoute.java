@@ -1,15 +1,13 @@
 package com.springboot.bus2tangticket.model.TuyenXeVaTramDung;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.springboot.bus2tangticket.model.TaiKhoanVaPhanQuyen.Account;
+import com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.lang.model.element.Name;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -82,6 +80,9 @@ public class BusRoute {
 
     @OneToMany(mappedBy = "busRoute", fetch = FetchType.LAZY)
     private List<Assignment> assignments;
+
+    @OneToMany(mappedBy = "busRoute", fetch = FetchType.LAZY)
+    private List<RouteDepartureDate> routeDepartureDates;
 
     public List<Account> getAssignedAccounts() {
         return assignments.stream()
