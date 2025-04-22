@@ -78,7 +78,6 @@ public class BusStopController {
     public ResponseEntity<BaseResponse<BusStopResponseDTO>> updateBusStop(
             @PathVariable("idBusStop") int idBusStop,
             @Valid @RequestBody BusStopRequestDTO updatedDto) {
-        System.out.println(updatedDto);
         BaseResponse<BusStop> baseResponse = busStopServiceImpl.updateBusStop(idBusStop, this.modelMapper.map(updatedDto, BusStop.class));
         return ResponseEntity.ok(
                 new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
@@ -95,7 +94,10 @@ public class BusStopController {
         BaseResponse<BusStop> baseResponse = busStopServiceImpl.deleteBusStop(idBusStop);
 
         return ResponseEntity.ok(
-                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), this.modelMapper.map(baseResponse.getData(), BusStopResponseDTO.class))
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        baseResponse.getData() != null
+                        ? this.modelMapper.map(baseResponse.getData(), BusStopResponseDTO.class)
+                        : null)
         );
     }
 }

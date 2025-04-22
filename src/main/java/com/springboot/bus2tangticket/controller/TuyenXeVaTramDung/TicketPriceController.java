@@ -35,7 +35,9 @@ public class TicketPriceController {
         BaseResponse<TicketPrice> base = ticketPriceService.createTicketPrice(idBusRoute, entity);
         return ResponseEntity.ok(
                 new BaseResponse<>(base.getStatus(), base.getMessage(),
-                        modelMapper.map(base.getData(), TicketPriceResponseDTO.class))
+                        base.getData() != null
+                        ? modelMapper.map(base.getData(), TicketPriceResponseDTO.class)
+                        : null)
         );
     }
 
@@ -88,7 +90,9 @@ public class TicketPriceController {
         BaseResponse<TicketPrice> base = ticketPriceService.deleteTicketPrice(id);
         return ResponseEntity.ok(
                 new BaseResponse<>(base.getStatus(), base.getMessage(),
-                        modelMapper.map(base.getData(), TicketPriceResponseDTO.class))
+                        base.getData() != null
+                        ? modelMapper.map(base.getData(), TicketPriceResponseDTO.class)
+                        : null)
         );
     }
 }

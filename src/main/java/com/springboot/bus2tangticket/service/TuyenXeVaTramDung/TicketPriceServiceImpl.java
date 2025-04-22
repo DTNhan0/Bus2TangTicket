@@ -37,7 +37,7 @@ public class TicketPriceServiceImpl implements TicketPriceService {
         resetAutoIncrement();
         BusRoute route = busRouteService.getBusRoute(idBusRoute).getData();
         if (route == null) {
-            return new BaseResponse<>(ResponseStatus.FAILED, "Không tìm thấy tuyến xe với id: " + idBusRoute, null);
+            return new BaseResponse<>(ResponseStatus.FAILED, "Không tìm thấy BusRoute với id: " + idBusRoute, null);
         }
 
         ticketPrice.setBusRoute(route);

@@ -92,12 +92,13 @@ VALUES
   1
 );
 
+-- BUSROUTE
 INSERT INTO busroute (
-  IdBusRoute, IdParent, BusRouteName, Overview, Description, Highlights,
+  IdParent, BusRouteName, Overview, Description, Highlights,
   Included, Excluded, WhatToBring, BeforeYouGo, IsAvailable
 )
 VALUES
-(1, NULL, 'Line 1: Trung tâm TP - Dinh Độc Lập',
+(NULL, 'Line 1: Trung tâm TP - Dinh Độc Lập',
   'Tuyến du lịch thành phố bằng xe buýt hai tầng hiện đại với lộ trình trung tâm Sài Gòn.',
   'Trải nghiệm khám phá trung tâm thành phố Hồ Chí Minh bằng xe buýt hai tầng Vietnam Sightseeing với hệ thống thuyết minh tự động đa ngôn ngữ.',
   'Đi qua Nhà thờ Đức Bà, Bưu điện, Dinh Độc Lập, phố đi bộ Nguyễn Huệ...',
@@ -108,7 +109,7 @@ VALUES
   1
 ),
 
-(2, NULL, 'Line 2: Sài Gòn - Chợ Lớn',
+(NULL, 'Line 2: Sài Gòn - Chợ Lớn',
   'Là một trong những sản phẩm xe buýt 2 tầng đầu tiên Sài Gòn, Sài Gòn - Chợ lớn City tour là một hình thức độc đáo với dịch vụ chất lượng cao mang đến một chuyến du lịch sáng tạo, thú vị và linh hoạt.',
   'Chúng tôi cam kết cải thiện chất lượng trong ngành du lịch tại mỗi thành phố nơi chúng tôi có mặt, cũng như nỗ lực để đạt được sự hài lòng hoàn toàn của khách hàng.',
   'Xe buýt hai tầng Vietnam Sightseeing tại thành phố Hồ Chí Minh\nVào cửa không giới hạn các điểm tham quan chính ở Sài Gòn (vé có giá trị trong 4 giờ)\nTham quan Sài Gòn theo tốc độ của riêng bạn và ngắm nhìn những địa danh tiêu biểu nhất của Sài Gòn\nCó thể kết nối Audio guide 9 ngôn ngữ\nXe buýt chạy cứ sau 30 phút',
@@ -119,7 +120,7 @@ VALUES
   0
 ),
 
-(3, 2, 'Line 2B: Sài Gòn - Chợ Lớn - Mở rộng',
+(2, 'Line 2B: Sài Gòn - Chợ Lớn - Mở rộng',
   'Tuyến mở rộng từ Line 2, đi qua thêm nhiều điểm ở khu vực quận 5.',
   'Bổ sung các điểm như Bệnh viện Hùng Vương, Chùa Bà Thiên Hậu, Hẻm ẩm thực Hải Thượng Lãn Ông.',
   'Tuyến dài hơn, có thời lượng 6 giờ\nDừng lâu hơn tại mỗi điểm',
@@ -130,6 +131,7 @@ VALUES
   1
 );
 
+-- BUSSTOP
 -- Trạm dừng cho tuyến Line 1: Trung tâm TP - Dinh Độc Lập (IdBusRoute = 1)
 INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, `Address`, `StopOrder`, `IsAvailable`) VALUES
 (NULL, 1, 'Nhà thờ Đức Bà', 
@@ -168,6 +170,7 @@ INSERT INTO `busstop` (`IdParent`, `IdBusRoute`, `BusStopName`, `Introduction`, 
 '710 Nguyễn Trãi, Phường 11, Quận 5, TP.HCM', 
 1, TRUE);
 
+-- TICKETPRICE
 -- Vé 24h (active) cho Line 1
 INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
 VALUES (1, 299000, 225000, '24h', 1);
@@ -200,5 +203,24 @@ VALUES (3, 305000, 230000, '24h', 0);
 INSERT INTO ticketprice (IdBusRoute, ParentPrice, ChildPrice, TicketType, Status)
 VALUES (3, 415000, 330000, '48h', 1);
 
+-- ASSIGNMENT
+-- Account 1: nguyenvanan → Line 1
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (1, 1);
+
+-- Account 2: tranthibich → Line 1 và Line 2
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (1, 2);
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (2, 2);
+
+-- Account 3: levancuong → Line 2B
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (3, 3);
+
+-- Account 4: phamthiduyen → Line 1
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (1, 4);
+
+-- Account 5: hoangvanem → Line 2
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (2, 5);
+
+-- Account 6: dothiphuong → Line 2B
+INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (3, 6);
 
  

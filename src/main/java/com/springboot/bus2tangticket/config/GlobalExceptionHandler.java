@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
         String message = "Lỗi ràng buộc dữ liệu";
 
         if (rootCause instanceof SQLIntegrityConstraintViolationException) {
-            message = "Không thể xóa do ràng buộc foreign key";
+            message = "Lỗi ràng buộc foreign key";
         }
 
         return ResponseEntity.badRequest().body(
