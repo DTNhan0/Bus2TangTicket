@@ -12,7 +12,5 @@ public class RouteDepartureDateResponseDTO {
 
     private LocalDate date;
 
-    private Integer numberOfSeats;
-
     private Boolean status;
 }

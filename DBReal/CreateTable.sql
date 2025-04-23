@@ -142,12 +142,10 @@ CREATE TABLE `routedeparturedate` (
   `IdRouteDepartureDate` int NOT NULL AUTO_INCREMENT,
   `Date` date NOT NULL,
   `IdBusRoute` int NOT NULL,
-  `NumberOfSeats` int NOT NULL,
   `Status` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`IdRouteDepartureDate`),
   UNIQUE KEY `unique_route_departure` (`IdBusRoute`,`Date`),
-  CONSTRAINT `routedeparturedate_ibfk_1` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`),
-  CONSTRAINT `routedeparturedate_chk_1` CHECK ((`NumberOfSeats` > 0))
+  CONSTRAINT `routedeparturedate_ibfk_1` FOREIGN KEY (`IdBusRoute`) REFERENCES `busroute` (`IdBusRoute`)
 );
 
 CREATE TABLE `busstopschedule` (

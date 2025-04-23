@@ -11,8 +11,5 @@ public class RouteDepartureDateRequestDTO {
     private LocalDate date;
 
     @NotNull
-    private Integer numberOfSeats;
-
-    @NotNull
     private Boolean status;
 }

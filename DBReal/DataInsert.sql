@@ -222,19 +222,28 @@ INSERT INTO assignment (IdBusRoute, IdAccount) VALUES (3, 6);
 
 -- ROUTERDEPARTUREDATE
 -- Line 1: Trung tâm TP - Dinh Độc Lập (IdBusRoute = 1)
-INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
-('2025-04-19', 1, 30, 1),
-('2025-04-20', 1, 30, 1),
-('2025-04-21', 1, 30, 1);
+INSERT INTO routedeparturedate (Date, IdBusRoute, Status) VALUES
+('2025-04-19', 1, 1),
+('2025-04-20', 1, 1),
+('2025-04-21', 1, 1);
 
 -- Line 2: Sài Gòn - Chợ Lớn (IdBusRoute = 2)
-INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
-('2025-04-19', 2, 30, 1),
-('2025-04-20', 2, 30, 1),
-('2025-04-21', 2, 30, 1);
+INSERT INTO routedeparturedate (Date, IdBusRoute, Status) VALUES
+('2025-04-19', 2, 1),
+('2025-04-20', 2, 1),
+('2025-04-21', 2, 1);
 
 -- Line 2B: Sài Gòn - Chợ Lớn - Mở rộng (IdBusRoute = 3)
-INSERT INTO routedeparturedate (Date, IdBusRoute, NumberOfSeats, Status) VALUES
-('2025-04-19', 3, 30, 1),
-('2025-04-20', 3, 30, 1),
-('2025-04-21', 3, 30, 1);
+INSERT INTO routedeparturedate (Date, IdBusRoute, Status) VALUES
+('2025-04-19', 3, 1),
+('2025-04-20', 3, 1),
+('2025-04-21', 3, 1);
+
+-- VOUCHER
+INSERT INTO voucher (VoucherCode, Percent, Content, Expired, Count) VALUES
+('WELCOME10', 10, 'Giảm 10% cho đơn đầu tiên', '2025-06-30 23:59:59', 100),
+('SUMMER15', 15, 'Ưu đãi hè - Giảm 15% cho tất cả các tuyến', '2025-07-15 23:59:59', 200),
+('HOTDEAL20', 20, 'Giảm 20% khi đặt vé từ 2 người trở lên', '2025-05-31 23:59:59', 150),
+('WEEKEND5', 5, 'Giảm 5% cho chuyến đi cuối tuần', '2025-12-31 23:59:59', 300),
+('LOYAL25', 25, 'Tri ân khách hàng thân thiết - Giảm 25%', '2025-10-01 23:59:59', 50);
+

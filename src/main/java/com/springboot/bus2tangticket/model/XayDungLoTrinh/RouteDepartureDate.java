@@ -1,10 +1,12 @@
 package com.springboot.bus2tangticket.model.XayDungLoTrinh;
 
+import com.springboot.bus2tangticket.model.DatVeVaThanhToan.InvoiceDetail;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusRoute;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,9 +24,9 @@ public class RouteDepartureDate {
     @JoinColumn(name = "IdBusRoute", nullable = false, foreignKey = @ForeignKey(name = "routedeparturedate_ibfk_1"))
     private BusRoute busRoute;
 
-    @Column(name = "NumberOfSeats", nullable = false)
-    private Integer numberOfSeats;
-
     @Column(name = "Status", nullable = false)
     private Boolean status = true;
+
+    @OneToMany(mappedBy = "routeDepartureDate", fetch = FetchType.LAZY)
+    private List<InvoiceDetail> invoiceDetailList;
 }
