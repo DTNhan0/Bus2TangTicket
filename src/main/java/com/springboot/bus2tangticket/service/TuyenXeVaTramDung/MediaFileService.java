@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface MediaFileService {
-    BaseResponse<List<MediaFile>> createListMedia(int idBusRoute, int idBusStop, List<MediaFile> mediaFileList);
-    BaseResponse<List<MediaFile>> deleteListMedia(int idBusRoute, int idBusStop, List<MediaFile> mediaFileList);
+    BaseResponse<List<MediaFile>> createListMedia(Integer idBusRoute, Integer idBusStop, List<MediaFile> mediaFileList);
+    BaseResponse<List<MediaFile>> deleteListMedia(Integer idBusRoute, Integer idBusStop, List<MediaFile> mediaFileList);
     Optional<MediaFile> getMediaFileById(Integer id);
 }

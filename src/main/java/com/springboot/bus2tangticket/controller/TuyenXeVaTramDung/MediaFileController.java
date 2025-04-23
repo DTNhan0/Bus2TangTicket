@@ -1,73 +1,91 @@
 package com.springboot.bus2tangticket.controller.TuyenXeVaTramDung;
 
+import com.springboot.bus2tangticket.dto.request.MediaFile.MediaFileDeleteRequestDTO;
+import com.springboot.bus2tangticket.dto.request.MediaFile.MediaFileUploadRequestDTO;
+import com.springboot.bus2tangticket.dto.response.MediaFile.MediaFileResponseDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
-import com.springboot.bus2tangticket.dto.response.responseUtil.ResponseStatus;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.MediaFile;
 import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.MediaFileService;
-import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v1/media")
-@RequiredArgsConstructor
 @CrossOrigin
+@RequestMapping("/api/v1/mediafiles")
 public class MediaFileController {
 
     @Autowired
-    private final MediaFileService mediaFileService;
+    private MediaFileService mediaFileService;
 
-    @PostMapping("/upload")
-    public BaseResponse<List<MediaFile>> uploadImages(
-            @RequestParam(required = false, defaultValue = "0") int idBusRoute,
-            @RequestParam(required = false, defaultValue = "0") int idBusStop,
-            @RequestParam("files") List<MultipartFile> files) {
+    @Autowired
+    private ModelMapper modelMapper;
 
-        List<MediaFile> mediaFiles = new ArrayList<>();
+    @PostMapping
+    public ResponseEntity<BaseResponse<List<MediaFileResponseDTO>>> upload(
+            MediaFileUploadRequestDTO requestDTO) throws Exception {
 
-        for (MultipartFile file : files) {
+        List<MediaFile> entities = requestDTO.getFiles().stream().map(file -> {
             try {
                 MediaFile mf = new MediaFile();
                 mf.setFileName(file.getOriginalFilename());
                 mf.setFileType(file.getContentType());
                 mf.setFileData(file.getBytes());
-                mediaFiles.add(mf);
+                return mf;
             } catch (IOException e) {
-                return new BaseResponse<>(ResponseStatus.SUCCESS, "Lỗi khi xử lý file: " + file.getOriginalFilename(), null);
+                throw new RuntimeException("Lỗi đọc file", e);
             }
-        }
+        }).collect(Collectors.toList());
 
-        return mediaFileService.createListMedia(idBusRoute, idBusStop, mediaFiles);
+        BaseResponse<List<MediaFile>> base = mediaFileService.createListMedia(
+                requestDTO.getIdBusRoute(), requestDTO.getIdBusStop(), entities);
+
+        List<MediaFileResponseDTO> dtoList = base.getData().stream()
+                .map(mf -> modelMapper.map(mf, MediaFileResponseDTO.class))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dtoList));
     }
 
-    @GetMapping("/{idMediaFile}")
-    public ResponseEntity<byte[]> getImageById(@PathVariable("idMediaFile") Integer idMediaFile) {
-        return mediaFileService.getMediaFileById(idMediaFile)
-                .map(mediaFile -> {
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.setContentType(MediaType.parseMediaType(mediaFile.getFileType()));
-                    headers.setContentLength(mediaFile.getFileData().length);
-                    headers.setContentDispositionFormData("attachment", mediaFile.getFileName());
+    @DeleteMapping
+    public ResponseEntity<BaseResponse<List<MediaFileResponseDTO>>> delete(
+            @RequestBody MediaFileDeleteRequestDTO requestDTO) {
 
-                    return new ResponseEntity<>(mediaFile.getFileData(), headers, HttpStatus.OK);
-                })
-                .orElse(ResponseEntity.notFound().build());
+        List<MediaFile> toDelete = requestDTO.getMediaFileIds().stream().map(id -> {
+            MediaFile mf = new MediaFile(); mf.setIdMediaFile(id); return mf;
+        }).collect(Collectors.toList());
+
+        BaseResponse<List<MediaFile>> base = mediaFileService.deleteListMedia(
+                requestDTO.getIdBusRoute(), requestDTO.getIdBusStop(), toDelete);
+
+        List<MediaFileResponseDTO> dtoList = base.getData().stream().map(mf -> {
+            MediaFileResponseDTO dto = modelMapper.map(mf, MediaFileResponseDTO.class);
+            // gán thêm hai trường thủ công
+            dto.setIdBusRoute(mf.getBusRoute()  != null ? mf.getBusRoute().getIdBusRoute() : null);
+            dto.setIdBusStop( mf.getBusStop()   != null ? mf.getBusStop().getIdBusStop()   : null);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dtoList));
     }
 
-    @DeleteMapping("/delete")
-    public BaseResponse<List<MediaFile>> deleteMedia(
-            @RequestParam(required = false, defaultValue = "0") int idBusRoute,
-            @RequestParam(required = false, defaultValue = "0") int idBusStop,
-            @RequestBody List<MediaFile> mediaFileList) {
-        return mediaFileService.deleteListMedia(idBusRoute, idBusStop, mediaFileList);
+    @GetMapping("/{id}")
+    public ResponseEntity<byte[]> fetch(@PathVariable Integer id) {
+        Optional<MediaFile> opt = mediaFileService.getMediaFileById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        MediaFile mf = opt.get();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(mf.getFileType()));
+        headers.setContentDisposition(ContentDisposition.inline().filename(mf.getFileName()).build());
+
+        return new ResponseEntity<>(mf.getFileData(), headers, HttpStatus.OK);
     }
 }
