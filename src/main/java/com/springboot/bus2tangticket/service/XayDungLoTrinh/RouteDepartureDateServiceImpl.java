@@ -1,4 +1,4 @@
-package com.springboot.bus2tangticket.service.LoTrinhTuyen;
+package com.springboot.bus2tangticket.service.XayDungLoTrinh;
 
 
 import com.springboot.bus2tangticket.dto.request.RouteDepartureDate.RouteDepartureDateRequestDTO;
@@ -52,11 +52,10 @@ public class RouteDepartureDateServiceImpl implements RouteDepartureDateService 
         if(busRoute == null)
             return new BaseResponse<>(ResponseStatus.FAILED, "Không tìm thấy BusRoute có id: " + idBusRoute, null);
 
-        com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate routeDepartureDateAdd = new com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate();
+        RouteDepartureDate routeDepartureDateAdd = new com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate();
         routeDepartureDateAdd.setBusRoute(busRoute);
         routeDepartureDateAdd.setDate(routerDepartureDate.getDate());
         routeDepartureDateAdd.setStatus(routerDepartureDate.getStatus());
-        routeDepartureDateAdd.setNumberOfSeats(routerDepartureDate.getNumberOfSeats());
 
         return new BaseResponse<>(ResponseStatus.SUCCESS, "Tạo routerdeparturedate thành công!", routeDepartureDateRepo.save(routeDepartureDateAdd));
     }

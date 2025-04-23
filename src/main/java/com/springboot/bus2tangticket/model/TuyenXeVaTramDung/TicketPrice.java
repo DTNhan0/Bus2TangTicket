@@ -1,6 +1,7 @@
 package com.springboot.bus2tangticket.model.TuyenXeVaTramDung;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.springboot.bus2tangticket.model.DatVeVaThanhToan.InvoiceDetail;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +15,7 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "ticketprice")
@@ -54,5 +56,8 @@ public class TicketPrice {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdBusRoute", nullable = false)
     private BusRoute busRoute;
+
+    @OneToMany(mappedBy = "ticketPrice", fetch = FetchType.LAZY)
+    private List<InvoiceDetail> invoiceDetails;
 }
 

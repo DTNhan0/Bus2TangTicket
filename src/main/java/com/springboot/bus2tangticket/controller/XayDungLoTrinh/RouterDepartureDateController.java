@@ -1,4 +1,4 @@
-package com.springboot.bus2tangticket.controller.LoTrinhTuyen;
+package com.springboot.bus2tangticket.controller.XayDungLoTrinh;
 
 import com.springboot.bus2tangticket.dto.request.RouteDepartureDate.RouteDepartureDateRequestDTO;
 import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteResponseDTO;
@@ -7,7 +7,7 @@ import com.springboot.bus2tangticket.dto.response.RouteDepartureDate.RouteDepart
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusRoute;
 import com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate;
-import com.springboot.bus2tangticket.service.LoTrinhTuyen.RouteDepartureDateServiceImpl;
+import com.springboot.bus2tangticket.service.XayDungLoTrinh.RouteDepartureDateServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

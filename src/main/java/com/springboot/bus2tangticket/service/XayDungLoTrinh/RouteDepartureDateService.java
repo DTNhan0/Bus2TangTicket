@@ -1,4 +1,4 @@
-package com.springboot.bus2tangticket.service.LoTrinhTuyen;
+package com.springboot.bus2tangticket.service.XayDungLoTrinh;
 
 import com.springboot.bus2tangticket.dto.request.RouteDepartureDate.RouteDepartureDateRequestDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
