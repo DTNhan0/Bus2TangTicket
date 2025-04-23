@@ -84,6 +84,9 @@ public class BusRoute {
     @OneToMany(mappedBy = "busRoute", fetch = FetchType.LAZY)
     private List<RouteDepartureDate> routeDepartureDates;
 
+    @OneToMany(mappedBy = "busRoute", fetch = FetchType.LAZY)
+    private List<MediaFile> mediaFileList;
+
     public List<Account> getAssignedAccounts() {
         return assignments.stream()
                 .map(Assignment::getAccount)
