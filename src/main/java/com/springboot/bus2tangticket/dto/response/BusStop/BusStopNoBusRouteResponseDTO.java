@@ -1,9 +1,11 @@
 package com.springboot.bus2tangticket.dto.response.BusStop;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.springboot.bus2tangticket.dto.response.MediaFile.MediaFileResponseDTO;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class BusStopNoBusRouteResponseDTO {
@@ -27,4 +29,6 @@ public class BusStopNoBusRouteResponseDTO {
     private LocalDateTime updateAt;
 
     private Boolean isAvailable;
+
+    private List<MediaFileResponseDTO> mediaBusStopList;
 }

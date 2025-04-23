@@ -63,5 +63,8 @@ public class BusStop {
     @OneToMany(mappedBy = "busStop", fetch = FetchType.LAZY)
     private List<BusStopSchedule> busStopScheduleList;
 
+    @OneToMany(mappedBy = "busStop", fetch = FetchType.LAZY)
+    private List<MediaFile> mediaFileList;
+
 }
 
