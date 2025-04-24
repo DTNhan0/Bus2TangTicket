@@ -31,13 +31,13 @@ public class VoucherServiceImpl implements VoucherService{
     @Transactional
     public BaseResponse<Voucher> createVoucher(Voucher voucher) {
         resetAutoIncrement();
-        return new BaseResponse<>(ResponseStatus.SUCCESS, "Tạo Userbook thành công!", voucherRepo.save(voucher));
+        return new BaseResponse<>(ResponseStatus.SUCCESS, "Tạo voucher thành công!", voucherRepo.save(voucher));
 
     }
 
     @Override
     public BaseResponse<List<Voucher>> getAllVoucer() {
-        return new BaseResponse<>(ResponseStatus.SUCCESS, "Lấy danh sách userbook thành công!", voucherRepo.findAll());
+        return new BaseResponse<>(ResponseStatus.SUCCESS, "Lấy danh sách voucher thành công!", voucherRepo.findAll());
     }
 
     @Override
@@ -47,7 +47,7 @@ public class VoucherServiceImpl implements VoucherService{
         if(voucher == null)
             return new BaseResponse<>(ResponseStatus.SUCCESS, "Không tìm thấy voucher có code: " + voucherCode, null);
 
-        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã tìm thấy userbook có code: " + voucherCode, voucher);
+        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã tìm thấy voucher có code: " + voucherCode, voucher);
     }
 
     @Override
@@ -59,6 +59,6 @@ public class VoucherServiceImpl implements VoucherService{
 
         voucherRepo.deleteById(voucherCode);
 
-        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã xóa userbook có code: " + voucherCode, voucher);
+        return new BaseResponse<>(ResponseStatus.SUCCESS, "Đã xóa voucher có code: " + voucherCode, voucher);
     }
 }

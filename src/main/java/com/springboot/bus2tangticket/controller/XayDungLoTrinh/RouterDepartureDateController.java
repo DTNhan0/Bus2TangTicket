@@ -1,6 +1,7 @@
 package com.springboot.bus2tangticket.controller.XayDungLoTrinh;
 
 import com.springboot.bus2tangticket.dto.request.RouteDepartureDate.RouteDepartureDateRequestDTO;
+import com.springboot.bus2tangticket.dto.request.RouteDepartureDate.RouteDepartureDateStatusRequestDTO;
 import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteResponseDTO;
 import com.springboot.bus2tangticket.dto.response.RouteDepartureDate.RouteDepartureDateListResponseDTO;
 import com.springboot.bus2tangticket.dto.response.RouteDepartureDate.RouteDepartureDateResponseDTO;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1")
 public class RouterDepartureDateController {
     @Autowired
@@ -78,6 +80,27 @@ public class RouterDepartureDateController {
     }
 
     //UPDATE
+    @PutMapping("/routerdeparturedate/{idRouteDepartureDate}/status")
+    public ResponseEntity<BaseResponse<RouteDepartureDateResponseDTO>> updateStatus(
+            @PathVariable("idRouteDepartureDate") int idRouteDepartureDate,
+            @RequestBody RouteDepartureDateStatusRequestDTO dto
+    ) {
+        BaseResponse<com.springboot.bus2tangticket.model.XayDungLoTrinh.RouteDepartureDate> base =
+                routerDepartureDateService.updateStatus(idRouteDepartureDate, dto.getStatus());
+
+        if (base.getData() == null) {
+            return ResponseEntity.ok(new BaseResponse<>(
+                    base.getStatus(), base.getMessage(), null
+            ));
+        }
+
+        RouteDepartureDateResponseDTO responseDTO =
+                modelMapper.map(base.getData(), RouteDepartureDateResponseDTO.class);
+
+        return ResponseEntity.ok(new BaseResponse<>(
+                base.getStatus(), base.getMessage(), responseDTO
+        ));
+    }
 
     //DELETE
     @DeleteMapping("/routerdeparturedate/{idRouterDepartureDate}")

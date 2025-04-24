@@ -40,12 +40,61 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     @Override
     @Transactional
-    public BaseResponse<List<MediaFile>> createListMedia(
-            Integer idBusRoute, Integer idBusStop, List<MediaFile> mediaFileList) {
-
+    public BaseResponse<MediaFile> createMedia(Integer idBusRoute, Integer idBusStop, MediaFile mediaFile) {
         resetAutoIncrement();
-        // Phải truyền đúng một trong idBusRoute hoặc idBusStop
         if ((idBusRoute == null && idBusStop == null) || (idBusRoute != null && idBusStop != null)) {
+            return new BaseResponse<>(ResponseStatus.FAILED,
+                    "Phải truyền đúng một trong idBusRoute hoặc idBusStop", null);
+        }
+
+        BusRoute route = null;
+        BusStop stop = null;
+        if (idBusRoute != null) {
+            route = busRouteRepo.findById(idBusRoute).orElse(null);
+            if (route == null)
+                return new BaseResponse<>(ResponseStatus.FAILED,
+                        "Không tìm thấy busRoute id: " + idBusRoute, null);
+        } else {
+            stop = busStopService.getBusStop(idBusStop).getData();
+            if (stop == null)
+                return new BaseResponse<>(ResponseStatus.FAILED,
+                        "Không tìm thấy busStop id: " + idBusStop, null);
+            route = stop.getBusRoute();
+        }
+
+        mediaFile.setBusRoute(route);
+        mediaFile.setBusStop(stop);
+        // fileType lấy từ field đã set ở controller
+        MediaFile saved = mediaFileRepo.save(mediaFile);
+        return new BaseResponse<>(ResponseStatus.SUCCESS,
+                "Upload file thành công!", saved);
+    }
+    @Override
+    @Transactional
+
+    public BaseResponse<MediaFile> deleteMedia(Integer idMediaFile) {
+        Optional<MediaFile> opt = mediaFileRepo.findById(idMediaFile);
+        if (opt.isEmpty()) {
+            return new BaseResponse<>(ResponseStatus.FAILED,
+                    "Không tìm thấy mediaFile id: " + idMediaFile, null);
+        }
+        MediaFile mf = opt.get();
+        mediaFileRepo.delete(mf);
+        return new BaseResponse<>(ResponseStatus.SUCCESS,
+                "Xóa file thành công!", mf);
+    }
+
+    @Override
+    public Optional<MediaFile> getMediaFileById(Integer id) {
+        return mediaFileRepo.findById(id);
+    }
+
+    @Override
+    public BaseResponse<List<MediaFile>> getListMedia(Integer idBusRoute, Integer idBusStop) {
+        // phải truyền đúng 1 trong 2
+        if ((idBusRoute == null && idBusStop == null) ||
+                (idBusRoute != null && idBusStop != null))
+        {
             return new BaseResponse<>(
                     ResponseStatus.FAILED,
                     "Phải truyền đúng một trong idBusRoute hoặc idBusStop",
@@ -53,83 +102,32 @@ public class MediaFileServiceImpl implements MediaFileService {
             );
         }
 
-        BusRoute busRoute = null;
-        BusStop busStop = null;
-
+        List<MediaFile> list;
         if (idBusRoute != null) {
-            Optional<BusRoute> routeOpt = busRouteRepo.findById(idBusRoute);
-            if (routeOpt.isEmpty()) {
+            // kiểm tra tồn tại route
+            if (!busRouteRepo.existsById(idBusRoute)) {
                 return new BaseResponse<>(
                         ResponseStatus.FAILED,
                         "Không tìm thấy busRoute với id: " + idBusRoute,
                         null
                 );
             }
-            busRoute = routeOpt.get();
+            list = mediaFileRepo.findAllByBusRoute_IdBusRoute(idBusRoute);
         } else {
-            // idBusStop != null
-            busStop = busStopService.getBusStop(idBusStop).getData();
-            if (busStop == null) {
+            // kiểm tra tồn tại stop
+            BusStop stop = busStopService.getBusStop(idBusStop).getData();
+            if (stop == null) {
                 return new BaseResponse<>(
                         ResponseStatus.FAILED,
                         "Không tìm thấy busStop với id: " + idBusStop,
                         null
                 );
             }
-            busRoute = busStop.getBusRoute();
+            list = mediaFileRepo.findAllByBusStop_IdBusStop(idBusStop);
         }
 
-        List<MediaFile> saved = new ArrayList<>();
-        for (MediaFile mf : mediaFileList) {
-            mf.setBusRoute(busRoute);
-            mf.setBusStop(busStop);
-            saved.add(mediaFileRepo.save(mf));
-        }
-
-        return new BaseResponse<>(
-                ResponseStatus.SUCCESS,
-                "Upload media files thành công!",
-                saved
-        );
-    }
-
-    @Override
-    @Transactional
-    public BaseResponse<List<MediaFile>> deleteListMedia(
-            Integer idBusRoute, Integer idBusStop, List<MediaFile> mediaFileList) {
-
-        // Phải truyền đúng một trong idBusRoute hoặc idBusStop
-        if ((idBusRoute == null && idBusStop == null) || (idBusRoute != null && idBusStop != null)) {
-            return new BaseResponse<>(
-                    ResponseStatus.FAILED,
-                    "Phải truyền đúng một trong idBusRoute hoặc idBusStop",
-                    null
-            );
-        }
-
-        List<MediaFile> toDelete = new ArrayList<>();
-        for (MediaFile mf : mediaFileList) {
-            Optional<MediaFile> opt = mediaFileRepo.findById(mf.getIdMediaFile());
-            if (opt.isEmpty()) {
-                return new BaseResponse<>(
-                        ResponseStatus.FAILED,
-                        "Không tìm thấy mediaFile id: " + mf.getIdMediaFile(),
-                        null
-                );
-            }
-            toDelete.add(opt.get());
-        }
-
-        mediaFileRepo.deleteAll(toDelete);
-        return new BaseResponse<>(
-                ResponseStatus.SUCCESS,
-                "Xóa media files thành công!",
-                toDelete
-        );
-    }
-
-    @Override
-    public Optional<MediaFile> getMediaFileById(Integer id) {
-        return mediaFileRepo.findById(id);
+        return new BaseResponse<>(ResponseStatus.SUCCESS,
+                "Lấy danh sách media files thành công",
+                list);
     }
 }
