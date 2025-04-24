@@ -1,11 +1,10 @@
 package com.springboot.bus2tangticket.controller.TuyenXeVaTramDung;
 
-import com.springboot.bus2tangticket.dto.request.MediaFile.MediaFileDeleteRequestDTO;
-import com.springboot.bus2tangticket.dto.request.MediaFile.MediaFileUploadRequestDTO;
 import com.springboot.bus2tangticket.dto.response.MediaFile.MediaFileResponseDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.MediaFile;
 import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.MediaFileService;
+import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.MediaFileServiceImpl;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -23,57 +22,48 @@ import java.util.stream.Collectors;
 public class MediaFileController {
 
     @Autowired
-    private MediaFileService mediaFileService;
+    private MediaFileServiceImpl mediaFileService;
 
     @Autowired
     private ModelMapper modelMapper;
 
-    @PostMapping
-    public ResponseEntity<BaseResponse<List<MediaFileResponseDTO>>> upload(
-            MediaFileUploadRequestDTO requestDTO) throws Exception {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<BaseResponse<MediaFileResponseDTO>> upload(
+            @RequestParam(required = false) Integer idBusRoute,
+            @RequestParam(required = false) Integer idBusStop,
+            @RequestParam String fileName,
+            @RequestPart("file") MultipartFile file
+    ) throws IOException {
 
-        List<MediaFile> entities = requestDTO.getFiles().stream().map(file -> {
-            try {
-                MediaFile mf = new MediaFile();
-                mf.setFileName(file.getOriginalFilename());
-                mf.setFileType(file.getContentType());
-                mf.setFileData(file.getBytes());
-                return mf;
-            } catch (IOException e) {
-                throw new RuntimeException("Lỗi đọc file", e);
-            }
-        }).collect(Collectors.toList());
+        MediaFile mf = new MediaFile();
+        mf.setFileName(fileName);
+        mf.setFileType(file.getContentType());        // Tự động lấy contentType
+        mf.setFileData(file.getBytes());
 
-        BaseResponse<List<MediaFile>> base = mediaFileService.createListMedia(
-                requestDTO.getIdBusRoute(), requestDTO.getIdBusStop(), entities);
-
-        List<MediaFileResponseDTO> dtoList = base.getData().stream()
-                .map(mf -> modelMapper.map(mf, MediaFileResponseDTO.class))
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dtoList));
+        BaseResponse<MediaFile> base = mediaFileService.createMedia(idBusRoute, idBusStop, mf);
+        MediaFileResponseDTO dto = null;
+        if (base.getData() != null) {
+            dto = modelMapper.map(base.getData(), MediaFileResponseDTO.class);
+            dto.setIdBusRoute(base.getData().getBusRoute() != null
+                    ? base.getData().getBusRoute().getIdBusRoute() : null);
+            dto.setIdBusStop(base.getData().getBusStop() != null
+                    ? base.getData().getBusStop().getIdBusStop() : null);
+        }
+        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dto));
     }
 
-    @DeleteMapping
-    public ResponseEntity<BaseResponse<List<MediaFileResponseDTO>>> delete(
-            @RequestBody MediaFileDeleteRequestDTO requestDTO) {
-
-        List<MediaFile> toDelete = requestDTO.getMediaFileIds().stream().map(id -> {
-            MediaFile mf = new MediaFile(); mf.setIdMediaFile(id); return mf;
-        }).collect(Collectors.toList());
-
-        BaseResponse<List<MediaFile>> base = mediaFileService.deleteListMedia(
-                requestDTO.getIdBusRoute(), requestDTO.getIdBusStop(), toDelete);
-
-        List<MediaFileResponseDTO> dtoList = base.getData().stream().map(mf -> {
-            MediaFileResponseDTO dto = modelMapper.map(mf, MediaFileResponseDTO.class);
-            // gán thêm hai trường thủ công
-            dto.setIdBusRoute(mf.getBusRoute()  != null ? mf.getBusRoute().getIdBusRoute() : null);
-            dto.setIdBusStop( mf.getBusStop()   != null ? mf.getBusStop().getIdBusStop()   : null);
-            return dto;
-        }).collect(Collectors.toList());
-
-        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dtoList));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<BaseResponse<MediaFileResponseDTO>> delete(@PathVariable Integer id) {
+        BaseResponse<MediaFile> base = mediaFileService.deleteMedia(id);
+        MediaFileResponseDTO dto = null;
+        if (base.getData() != null) {
+            dto = modelMapper.map(base.getData(), MediaFileResponseDTO.class);
+            dto.setIdBusRoute(base.getData().getBusRoute() != null
+                    ? base.getData().getBusRoute().getIdBusRoute() : null);
+            dto.setIdBusStop(base.getData().getBusStop() != null
+                    ? base.getData().getBusStop().getIdBusStop() : null);
+        }
+        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), dto));
     }
 
     @GetMapping("/{id}")
@@ -87,5 +77,25 @@ public class MediaFileController {
         headers.setContentDisposition(ContentDisposition.inline().filename(mf.getFileName()).build());
 
         return new ResponseEntity<>(mf.getFileData(), headers, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<BaseResponse<List<MediaFileResponseDTO>>> list(
+            @RequestParam(required = false) Integer idBusRoute,
+            @RequestParam(required = false) Integer idBusStop
+    ) {
+        BaseResponse<List<MediaFile>> base = mediaFileService.getListMedia(idBusRoute, idBusStop);
+        List<MediaFileResponseDTO> dtoList = base.getData() == null
+                ? null
+                : base.getData().stream().map(mf -> {
+            MediaFileResponseDTO dto = modelMapper.map(mf, MediaFileResponseDTO.class);
+            dto.setIdBusRoute(mf.getBusRoute() != null ? mf.getBusRoute().getIdBusRoute() : null);
+            dto.setIdBusStop(mf.getBusStop()  != null ? mf.getBusStop().getIdBusStop()   : null);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return ResponseEntity.ok(new BaseResponse<>(
+                base.getStatus(), base.getMessage(), dtoList
+        ));
     }
 }

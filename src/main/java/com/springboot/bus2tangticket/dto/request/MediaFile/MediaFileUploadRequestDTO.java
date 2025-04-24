@@ -9,5 +9,6 @@ import java.util.List;
 public class MediaFileUploadRequestDTO {
     private Integer idBusRoute;
     private Integer idBusStop;
-    private List<MultipartFile> files;
+    private String fileName;
+    private MultipartFile files;
 }

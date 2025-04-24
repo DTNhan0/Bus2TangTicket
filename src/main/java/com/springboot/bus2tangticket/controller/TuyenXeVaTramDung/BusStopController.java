@@ -71,6 +71,7 @@ public class BusStopController {
         );
     }
 
+    //OTHER
     //UPDATE
     @PutMapping("/busstop/{idBusStop}")
     public ResponseEntity<BaseResponse<BusStopResponseDTO>> updateBusStop(
@@ -98,4 +99,7 @@ public class BusStopController {
                         : null)
         );
     }
+
+    //READ
+
 }

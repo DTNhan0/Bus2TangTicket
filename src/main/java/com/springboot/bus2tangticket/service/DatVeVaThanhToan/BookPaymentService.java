@@ -115,7 +115,7 @@ public class BookPaymentService {
                     if (vc.getVoucherCode().equals(voucherCode)) {
                         if (vc.getCount() <= 0 || vc.getExpired().isBefore(LocalDateTime.now())) {
                             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-                            return new BaseResponse<>(ResponseStatus.FAILED, "Voucher không hợp lệ", null);
+                            return new BaseResponse<>(ResponseStatus.FAILED, "Voucher không còn hoặc đã hết hạn!", null);
                         }
 
                         vc.setCount(vc.getCount() - 1);

@@ -74,6 +74,25 @@ public class RouteDepartureDateServiceImpl implements RouteDepartureDateService 
     }
 
     //UPDATE
+    @Override
+    @Transactional
+    public BaseResponse<RouteDepartureDate> updateStatus(int idRouteDepartureDate, boolean status) {
+        RouteDepartureDate entity = routeDepartureDateRepo.findById(idRouteDepartureDate).orElse(null);
+        if (entity == null) {
+            return new BaseResponse<>(
+                    ResponseStatus.FAILED,
+                    "Không tìm thấy RouteDepartureDate với id: " + idRouteDepartureDate,
+                    null
+            );
+        }
+        entity.setStatus(status);
+        RouteDepartureDate saved = routeDepartureDateRepo.save(entity);
+        return new BaseResponse<>(
+                ResponseStatus.SUCCESS,
+                "Cập nhật status thành công cho id: " + idRouteDepartureDate,
+                saved
+        );
+    }
 
     //DELETE
     @Override

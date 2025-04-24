@@ -9,4 +9,5 @@ public interface RouteDepartureDateService {
     BaseResponse<RouteDepartureDate> createRouteDepartureDate(int idBusRoute, RouteDepartureDateRequestDTO routerDepartureDate);
     BaseResponse<BusRoute> getAllRDDByIdBusRoute(int idBusRoute);
     BaseResponse<RouteDepartureDate> deleteRouteDepartureDate(int idRouterDepartureDate);
+    BaseResponse<RouteDepartureDate> updateStatus(int idRouteDepartureDate, boolean status);
 }

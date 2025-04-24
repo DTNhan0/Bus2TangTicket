@@ -3,9 +3,11 @@ package com.springboot.bus2tangticket.controller.TuyenXeVaTramDung;
 import com.springboot.bus2tangticket.dto.request.BusRoute.BusRouteListBusStopRequestDTO;
 import com.springboot.bus2tangticket.dto.request.BusRoute.BusRouteRequestDTO;
 import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteListBusStopResponseDTO;
+import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteListTicketPriceResponseDTO;
 import com.springboot.bus2tangticket.dto.response.BusRoute.BusRouteResponseDTO;
 import com.springboot.bus2tangticket.dto.response.BusStop.BusStopNoBusRouteResponseDTO;
 import com.springboot.bus2tangticket.dto.response.BusStop.BusStopResponseDTO;
+import com.springboot.bus2tangticket.dto.response.TicketPrice.TicketPriceReponseNoBusRouteDTO;
 import com.springboot.bus2tangticket.dto.response.responseUtil.BaseResponse;
 import com.springboot.bus2tangticket.model.TuyenXeVaTramDung.BusRoute;
 import com.springboot.bus2tangticket.service.TuyenXeVaTramDung.BusRouteServiceImpl;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/v1")
 public class BusRouteController {
     @Autowired
@@ -89,6 +91,30 @@ public class BusRouteController {
         );
     }
 
+    @GetMapping("/busroute/{idBusRoute}/ticketprice")
+    public ResponseEntity<BaseResponse<BusRouteListTicketPriceResponseDTO>> getBusRouteListTicketPrice(@PathVariable("idBusRoute") int idBusRoute){
+        BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.getBusRoute(idBusRoute);
+
+        if(baseResponse.getData() == null)
+            return ResponseEntity.ok(
+                    new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), null)
+            );
+
+        BusRouteListTicketPriceResponseDTO responseDTO = this.modelMapper.map(
+                baseResponse.getData(), BusRouteListTicketPriceResponseDTO.class
+        );
+
+        responseDTO.setTicketPriceList(baseResponse.getData().getTicketPrices().stream()
+                .map(t -> this.modelMapper.map(t, TicketPriceReponseNoBusRouteDTO.class))
+                .toList()
+        );
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        responseDTO)
+        );
+    }
+
     //UPDATE
     @PutMapping("/busroute/{idBusRoute}")
     public ResponseEntity<BaseResponse<BusRouteResponseDTO>> updateBusRoute(
@@ -103,6 +129,7 @@ public class BusRouteController {
                 )
         );
     }
+
 
     //DELETE
     @DeleteMapping("/busroute/{idBusRoute}")
@@ -144,4 +171,49 @@ public class BusRouteController {
                         busRouteListBusStopResponseDTO)
         );
     }
+
+    @DeleteMapping("/busroute/{idBusRoute}/busstop")
+    public ResponseEntity<BaseResponse<BusRouteListBusStopResponseDTO>> removeListBusStopFromBusRoute(
+            @PathVariable int idBusRoute,
+            @RequestBody BusRouteListBusStopRequestDTO dto
+    ) {
+        BaseResponse<BusRoute> base = busRouteServiceImpl.removeListBusStopFromBusRoute(
+                idBusRoute, dto.getIdBusStopList()
+        );
+        if (base.getData() == null) {
+            return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), null));
+        }
+        // map giống PUT
+        BusRouteListBusStopResponseDTO out = modelMapper.map(base.getData(), BusRouteListBusStopResponseDTO.class);
+        out.setBusStopList(base.getData().getBusStops()
+                .stream().map(bs -> modelMapper.map(bs, BusStopNoBusRouteResponseDTO.class)).toList()
+        );
+        return ResponseEntity.ok(new BaseResponse<>(base.getStatus(), base.getMessage(), out));
+    }
+
+    //READ
+    @GetMapping("/busroute/{idBusRoute}/mediafile")
+    public ResponseEntity<BaseResponse<BusRouteListBusStopResponseDTO>> getBusRouteMediaFileList(@PathVariable("idBusRoute") int idBusRoute){
+        BaseResponse<BusRoute> baseResponse = busRouteServiceImpl.getBusRoute(idBusRoute);
+
+        if(baseResponse.getData() == null)
+            return ResponseEntity.ok(
+                    new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(), null)
+            );
+
+        BusRouteListBusStopResponseDTO busRouteListBusStopResponseDTO = this.modelMapper.map(
+                baseResponse.getData(), BusRouteListBusStopResponseDTO.class
+        );
+
+        busRouteListBusStopResponseDTO.setBusStopList(baseResponse.getData().getBusStops().stream()
+                .map(bs -> this.modelMapper.map(bs, BusStopNoBusRouteResponseDTO.class))
+                .toList()
+        );
+
+        return ResponseEntity.ok(
+                new BaseResponse<>(baseResponse.getStatus(), baseResponse.getMessage(),
+                        busRouteListBusStopResponseDTO)
+        );
+    }
+
 }
