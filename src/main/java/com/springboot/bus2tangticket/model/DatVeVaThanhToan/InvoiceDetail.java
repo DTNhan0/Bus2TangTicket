@@ -21,6 +21,7 @@ public class InvoiceDetail {
     @Column(name = "IdInvoiceDetail")
     private Integer idInvoiceDetail;
 
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "IdUserBook", nullable = false)
     private UserBook userBook;
