@@ -199,6 +199,7 @@ CREATE TABLE `invoice` (
   `PaidDateTime` datetime NOT NULL,
   `PaymentMethod` tinyint(1) NOT NULL,
   `PaymentVia` varchar(50) NOT NULL,
+  `Status` tinyint(1) DEFAULT "1" NOT NULL,
   PRIMARY KEY (`IdInvoice`)
 );
 
